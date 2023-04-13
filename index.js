@@ -56,6 +56,13 @@ buttonShowAll.addEventListener('click', () => {
   })
   .then(data => {
     let deleteUl = document.getElementById('ul2');
+    let deleteUl2 = document.getElementById('showUL');
+    if (deleteUl2) {
+        deleteUl2.remove();
+    } else {
+        console.log('element does not exist')
+    }
+
     if (deleteUl) {
         deleteUl.remove();
     } else {
@@ -79,7 +86,7 @@ buttonShowAll.addEventListener('click', () => {
             button2.textContent = "Delete";
             button1.style.marginRight = "2%";
             button1.onclick = () => {
-                change(item.id);
+                change(item.id, item.title);
             }
             button2.onclick = () => {
                 deleteing(item.id);
@@ -163,29 +170,33 @@ buttonPost.addEventListener('click', () => {
             console.error('Error deleting item:', error);
         });
     }
-    function change(id) {
-        //deleting the elements from before
-        let deleteLabel = document.getElementById('label1');
-        let deleteLabel2 = document.getElementById('label2');
-        let deleteInputBox = document.getElementById('header');
-        let deleteCompleted = document.getElementById();
-
-        //creating the elements again
+    function change(id, title) {
+        console.log(title);
+        // Check if the elements already exist, if so, return
         let li = document.getElementById('li_' + id);
+        if (li.querySelector('#label1')) {
+            return;
+        }
+        // Creating the elements
         let label = document.createElement('label');
-        label.id = "label1";
         let inputBox = document.createElement('input');
         let submit = document.createElement('button');
+        let label2 = document.createElement('label');
+        let completed = document.createElement('input');
+        let br1 = document.createElement('br');
+        let br2 = document.createElement('br');
+        let br3 = document.createElement('br');
+        let br4 = document.createElement('br');
+        label.id = "label1";
         submit.id = "putSubmit";
         submit.textContent = "submit changes";
         submit.onclick = () => {
-            transfer(id);
+            console.log(title);
+            transfer(id, title);
         }
         submit.setAttribute('type', 'submit');
         inputBox.setAttribute('type', 'text');
         inputBox.setAttribute('name', 'header');
-        let label2 = document.createElement('label');
-        let completed = document.createElement('input');
         completed.setAttribute('type', 'checkbox');
         completed.setAttribute('name', 'completed');
         completed.id = "completed";
@@ -195,20 +206,72 @@ buttonPost.addEventListener('click', () => {
         inputBox.id = "header";
         label.textContent = 'Enter a new name';
         label.setAttribute('for', 'header');
-        //making line breaks between the elements
-        li.appendChild(document.createElement('br'));
+        //appending the elements with line breaks
+        li.appendChild(br1);
         li.appendChild(label);
-        li.appendChild(document.createElement('br'));
+        li.appendChild(br2);
         li.appendChild(inputBox);
-        li.appendChild(document.createElement('br'));
+        li.appendChild(br3);
         li.appendChild(label2);
         li.appendChild(completed);
-        li.appendChild(document.createElement('br'));
+        li.appendChild(br4);
         li.appendChild(submit);
+        //adding event listener to remove the elements on button click
+        submit.addEventListener('click', function() {
+            li.removeChild(label);
+            li.removeChild(br1);
+            li.removeChild(inputBox);
+            li.removeChild(br2);
+            li.removeChild(label2);
+            li.removeChild(completed);
+            li.removeChild(submit);
+            li.removeChild(br3);
+            li.remove(br4);
+        });
     }
-    function transfer(id) {
-        //deleting the elements from before
-        console.log('transfered theoretically')
+    function transfer(id, title) {
+    let checkBoxValue = document.getElementById('completed').value;
+    let titleValue = document.getElementById('header').value;
+    let isTrue = false;
+    if (checkBoxValue == "on" && titleValue == "") {
+        if (checkBoxValue == "on") {
+            isTrue = true;
+        }
+        put(id, title, isTrue);
+    } else if(checkBoxValue == 'on' && titleValue != '' || titleValue != ' ') {
+        put(id, checkBoxValue, true)
+    } else {
+        put(id, title, false)
     }
+}
+    function put(id, title, completed) {
+                //transfering the data
+    const data = {
+        id: id,
+        title: title,
+        completed: completed
+    };
+
+    // Make the PUT request with fetch()
+    fetch(`http://localhost:3000/tasks`, {
+        method: "PUT",
+        headers: {
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+        throw new Error(`Failed to update task. Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(updatedData => {
+        console.log("task updated successfully:", updatedData);
+    })
+    .catch(error => {
+        console.error("Error updating task:", error);
+    });
+}
 
 })
