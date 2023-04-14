@@ -3,6 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let buttonShowAll = document.getElementById('showAll');
     console.log('code went here');
 
+    let status = document.createElement('p');
+    status.id = 'status';
+    status.textContent = 'Logged in';
+    document.body.appendChild(status);
+
 function showEverything() {
     let token = getToken();
     let htHeader = {
@@ -64,6 +69,7 @@ function showEverything() {
   })
 
     .catch(error => {
+      alert('something went wrong while fetching the data please try again')
       console.error('Error fetching data:', error);
     });
 }
@@ -104,10 +110,11 @@ buttonPost.addEventListener('click', () => {
         })
         .then(data => {
             alert('Your data has been sent');
+            showEverything();
             console.log(data);
         })
         .catch(error => {
-            alert('There was an error while fetching: ' + error)
+            alert('There was an error please try again or check the size of your input')
             console.error('Error fetching data:', error);
         });
     })
@@ -129,7 +136,7 @@ buttonPost.addEventListener('click', () => {
         .then(response => {
             if (!response.ok) {
                 alert('something went wrong')
-                throw new Error('Error deleting item: ' + response.status);
+                throw new Error('There was an error while deleting please try again');
             }
             alert('item succesfully deleted')
             console.log('Item deleted successfully');
@@ -235,16 +242,17 @@ buttonPost.addEventListener('click', () => {
     })
     .then(response => {
         if (!response.ok) {
-        throw new Error(`Failed to update task. Status: ${response.status}`);
+        throw new Error(`Failed to update task Please try again. Status: ${response.status}`);
         }
         return response.json();
     })
     .then(updatedData => {
+        alert('task updated succesfully');
         showEverything();
         console.log("task updated successfully:", updatedData);
     })
     .catch(error => {
-        console.error("Error updating task:", error);
+        alert('there was an error while changing the task please try again');
     });
 }
 
@@ -270,5 +278,15 @@ let logButton = document.getElementById('logoutButton');
 logButton.addEventListener('click', () => {
     logout();
 })
+
+function testJWTToken() {
+    let token = getToken();
+    if (token == null) {
+        window.location.href = 'login.html';
+        alert('You are not an authenticated user!')
+    }
+}
+
+testJWTToken();
 
 })

@@ -35,10 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(data);
             })
             .catch(error => {
-                alert('something went wrong')
+                alert('something went while getting the webtoken please try again')
                 console.error(error);
             });
         }
+    } else {
+        alert('please try the password m294 other passwords do not work');
     }
     })
 })

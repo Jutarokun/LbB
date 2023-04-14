@@ -3,6 +3,11 @@
     top: 10px;
     right: 10px;
 }
+#status {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
 button {
     display: inline-block;
     padding: 5px 10px;

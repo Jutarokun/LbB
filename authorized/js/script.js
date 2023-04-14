@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    let status = document.createElement('p');
+    status.id = 'status';
+    status.textContent = 'Logged in';
+    document.body.appendChild(status);
     function searchSpecificTask(input) {
         let information = input;
         let token = getToken();
@@ -56,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(data);
           })
           .catch(error => {
-            alert('there occured an error look in the console for further information');
+            alert('there occured an error please enter a valid id');
             console.error('Error fetching data:', error);
           });
     }
@@ -178,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then(response => {
         if (!response.ok) {
-        throw new Error(`Failed to update task. Status: ${response.status}`);
+        throw new Error(`Failed to update task Please try again. Status: ${response.status}`);
         }
         return response.json();
     })
@@ -204,8 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then(response => {
         if (!response.ok) {
-            alert('something went wrong')
-            throw new Error('Error deleting item: ' + response.status);
+            alert('there was an error while deleting the task please try again')
+            throw new Error('Error deleting item please try again');
         }
         alert('item succesfully deleted')
         let ol = document.getElementById('showUL');
@@ -231,4 +235,13 @@ let bButton = document.getElementById('back');
 bButton.addEventListener('click', () => {
     window.location.href = 'get.html';
 })
+function testJWTToken() {
+    let token = getToken();
+    if (token == null) {
+        window.location.href = 'login.html';
+        alert('You are not an authenticated user!')
+    }
+}
+
+testJWTToken();
 })
