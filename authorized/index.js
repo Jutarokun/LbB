@@ -23,16 +23,13 @@ function showEverything() {
       } else {
           console.log('element does not exist')
       }
-  
       if (deleteUl) {
           deleteUl.remove();
       } else {
           console.log('element not found');
       }
-  
       // Create a Set to keep track of unique keys
       let uniqueKeys = new Set();
-  
       let ul = document.createElement('ol');
       document.body.appendChild(ul);
       data.forEach(item => {
@@ -273,6 +270,5 @@ let logButton = document.getElementById('logoutButton');
 logButton.addEventListener('click', () => {
     logout();
 })
-
 
 })

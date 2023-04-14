@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let ul = document.createElement('ol');
             let li = document.createElement('li');
             let li2 = document.createElement('li');
+            li2.classList.add('box')
             let button1 = document.createElement('button');
             let button2 = document.createElement('button');
             let br = document.createElement('br');
@@ -62,28 +63,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleHashChange() {
         let hash = window.location.hash;
         if (hash.startsWith("#number=")) {
-        let input = hash.substring(8);
-        let isValid = verifyNumber(input);
-        if (isValid) {
-            searchSpecificTask(input);
-            console.log("Valid number: " + input);
+            let input = hash.substring(8);
+            let isValid = verifyNumber(input);
+            if (isValid) {
+                searchSpecificTask(input);
+                console.log("Valid number: " + input);
+            } else {
+                console.log("Invalid number: " + input);
+            }
         } else {
-            console.log("Invalid number: " + input);
+            alert('other hash detected please write the command correctly');
         }
-        } else {
-          alert('other hash detected please write the command correct');
-        }
-      }
-      function verifyNumber(input) {
-        let regex = /^(?:[0-6]?[0-9]{1,2}|700)$/;
+    }
+    function verifyNumber(input) {
+        let regex = /^(?:[0-6]?[0-9]{1,2}|1000)$/;
         if (regex.test(input)) {
-          return true;
+            return true;
         } else {
-          return false;
+            return false;
         }
-      }
-      window.addEventListener("hashchange", handleHashChange);
-
+    }
+    window.addEventListener("hashchange", handleHashChange);
+    // Trigger hashchange event again with the same hash value
       function change(id, title) {
         console.log(title);
         // Check if the elements already exist, if so, return
@@ -165,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         title: title,
         completed: completed
     };
-    
     // Make the PUT request with fetch()
     let token = getToken();
     fetch(`http://localhost:3000/auth/jwt/tasks`, {
