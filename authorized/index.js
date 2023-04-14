@@ -3,110 +3,73 @@ document.addEventListener('DOMContentLoaded', () => {
     let buttonShowAll = document.getElementById('showAll');
     console.log('code went here');
 
-
-//making the get on a specific task
-button.addEventListener('click', () => {
-    let information = document.getElementById('taskID').value;
-fetch(`http://localhost:3000/task/${information}`)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
+function showEverything() {
+    fetch(`http://localhost:3000/tasks`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      let deleteUl = document.getElementById('ul2');
+      let deleteUl2 = document.getElementById('showUL');
+      if (deleteUl2) {
+          deleteUl2.remove();
+      } else {
+          console.log('element does not exist')
+      }
+  
+      if (deleteUl) {
+          deleteUl.remove();
+      } else {
+          console.log('element not found');
+      }
+  
+      // Create a Set to keep track of unique keys
+      let uniqueKeys = new Set();
+  
+      let ul = document.createElement('ol');
+      document.body.appendChild(ul);
+      data.forEach(item => {
+          // Check if the key is unique
+          if (!uniqueKeys.has(item.id)) {
+              uniqueKeys.add(item.id);
+              let button1 = document.createElement('button');
+              let button2 = document.createElement('button');
+              button1.id = "button1_" + item.id;
+              button2.id = "button2_" + item.id;
+              button1.textContent = "Change";
+              button2.textContent = "Delete";
+              button1.style.marginRight = "2%";
+              button1.onclick = () => {
+                  change(item.id, item.title);
+              }
+              button2.onclick = () => {
+                  deleteing(item.id);
+              }
+              let newLi = document.createElement('li');
+              newLi.textContent = "title: " + item.title + "\n" + "completed: " + item.completed + "\n";
+              newLi.style.whiteSpace = "pre";
+              newLi.style.marginBottom = "3%";
+              newLi.appendChild(button1);
+              newLi.appendChild(button2);
+              newLi.id = "li_" + item.id;
+              ul.id = "ul2";
+              ul.appendChild(newLi);
+          }
+      });
   })
-  .then(data => {
-    let deleteUl = document.getElementById('showUL');
-    let deleteUl2 = document.getElementById('ul2');
-    if (deleteUl2) {
-        deleteUl2.remove();
-    } else {
-        console.log('item does not exist');
-    }
-    if (deleteUl) {
-        deleteUl.remove();
-    } else {
-        console.log('element not found');
-    }
-    let ul = document.createElement('ol');
-    let li = document.createElement('li');
-    let li2 = document.createElement('li');
-    ul.id = 'showUL';
-    li.textContent = "title: " + data.title;
-    li2.textContent = "completed: " + data.completed;
-    document.body.appendChild(ul);
-    ul.appendChild(li);
-    ul.appendChild(li2);
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
-});
 
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+}
 
 //making the get for more tasks
 
 buttonShowAll.addEventListener('click', () => {
-    fetch(`http://localhost:3000/tasks`)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    let deleteUl = document.getElementById('ul2');
-    let deleteUl2 = document.getElementById('showUL');
-    if (deleteUl2) {
-        deleteUl2.remove();
-    } else {
-        console.log('element does not exist')
-    }
-
-    if (deleteUl) {
-        deleteUl.remove();
-    } else {
-        console.log('element not found');
-    }
-
-    // Create a Set to keep track of unique keys
-    let uniqueKeys = new Set();
-
-    let ul = document.createElement('ol');
-    document.body.appendChild(ul);
-    data.forEach(item => {
-        // Check if the key is unique
-        if (!uniqueKeys.has(item.id)) {
-            uniqueKeys.add(item.id);
-            let button1 = document.createElement('button');
-            let button2 = document.createElement('button');
-            button1.id = "button1_" + item.id;
-            button2.id = "button2_" + item.id;
-            button1.textContent = "Change";
-            button2.textContent = "Delete";
-            button1.style.marginRight = "2%";
-            button1.onclick = () => {
-                change(item.id, item.title);
-            }
-            button2.onclick = () => {
-                deleteing(item.id);
-            }
-            let newLi = document.createElement('li');
-            newLi.textContent = "title: " + item.title + "\n" + "completed: " + item.completed + "\n";
-            newLi.style.whiteSpace = "pre";
-            newLi.style.marginBottom = "3%";
-            newLi.appendChild(button1);
-            newLi.appendChild(button2);
-            newLi.id = "li_" + item.id;
-            ul.id = "ul2";
-            ul.appendChild(newLi);
-        }
-    });
-})
-
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+    showEverything();
 })
 
 
@@ -239,13 +202,13 @@ buttonPost.addEventListener('click', () => {
         }
         put(id, title, isTrue);
     } else if(checkBoxValue == 'on' && titleValue != '' || titleValue != ' ') {
-        put(id, checkBoxValue, true)
+        put(id, titleValue, true)
     } else {
         put(id, title, false)
     }
 }
     function put(id, title, completed) {
-                //transfering the data
+    //transfering the data
     const data = {
         id: id,
         title: title,
@@ -267,11 +230,21 @@ buttonPost.addEventListener('click', () => {
         return response.json();
     })
     .then(updatedData => {
+        showEverything();
         console.log("task updated successfully:", updatedData);
     })
     .catch(error => {
         console.error("Error updating task:", error);
     });
 }
+
+function handleHashChange() {
+    let hash = window.location.hash;
+    if (hash === "#searchTask") {
+        window.location.href = "specificData.html";
+    }
+}
+window.addEventListener('hashchange', handleHashChange);
+
 
 })
