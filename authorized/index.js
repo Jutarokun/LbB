@@ -4,7 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('code went here');
 
 function showEverything() {
-    fetch(`http://localhost:3000/tasks`)
+    let token = getToken();
+    let htHeader = {
+        "Authorization": `Bearer ${token}`
+    }
+    fetch(`http://localhost:3000/auth/jwt/tasks`, { headers: htHeader})
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -79,6 +83,7 @@ buttonShowAll.addEventListener('click', () => {
 buttonPost.addEventListener('click', () => {
     console.log('it went here');
     let header = document.getElementById('title').value;
+    let token = getToken();
     let data = {
         "completed" : false,
         "title" : `${header}`
@@ -86,11 +91,12 @@ buttonPost.addEventListener('click', () => {
     const requestOptions = {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(data)
       };
-    fetch('http://localhost:3000/tasks', requestOptions)
+    fetch('http://localhost:3000/auth/jwt/tasks', requestOptions)
     .then(response => {
             if (!response.ok) {
             alert('Something went wrong');
@@ -114,10 +120,12 @@ buttonPost.addEventListener('click', () => {
             let li = document.getElementById('li_' + id);
             li.remove();
             console.log(id);
-            fetch(`http://localhost:3000/task/${id}`, {
+            let token = getToken();
+            fetch(`http://localhost:3000/auth/jwt/task/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`
             },
         })
         .then(response => {
@@ -214,12 +222,14 @@ buttonPost.addEventListener('click', () => {
         title: title,
         completed: completed
     };
+    let token = getToken();
 
     // Make the PUT request with fetch()
-    fetch(`http://localhost:3000/tasks`, {
+    fetch(`http://localhost:3000/auth/jwt/tasks`, {
         method: "PUT",
         headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(data)
     })
@@ -245,6 +255,21 @@ function handleHashChange() {
     }
 }
 window.addEventListener('hashchange', handleHashChange);
+
+function getToken() {
+    let token = localStorage.getItem("bearer");
+    return token;
+}
+function logout() {
+    localStorage.removeItem('bearer');
+    alert('you are logged out now');
+    window.location.href = 'login.html';
+}
+let logButton = document.getElementById('logoutButton');
+
+logButton.addEventListener('click', () => {
+    logout();
+})
 
 
 })

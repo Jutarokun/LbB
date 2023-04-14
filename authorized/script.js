@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     function searchSpecificTask(input) {
         let information = input;
-        fetch(`http://localhost:3000/task/${information}`)
+        let token = getToken();
+        let htHeader = {
+            "Authorization": `Bearer ${token}`
+        }
+        fetch(`http://localhost:3000/auth/jwt/task/${information}`, {headers: htHeader})
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -51,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(data);
           })
           .catch(error => {
+            alert('there occured an error look in the console for further information');
             console.error('Error fetching data:', error);
           });
     }
@@ -162,10 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // Make the PUT request with fetch()
-    fetch(`http://localhost:3000/tasks`, {
+    let token = getToken();
+    fetch(`http://localhost:3000/auth/jwt/tasks`, {
         method: "PUT",
         headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(data)
     })
@@ -186,13 +193,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     }
     function deleteing(id) {
-        let li = document.getElementById('li_' + id);
-        li.remove();
         console.log(id);
-        fetch(`http://localhost:3000/task/${id}`, {
+        let token = getToken();
+        fetch(`http://localhost:3000/auth/jwt/task/${id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
+            "Authorization": `Bearer ${token}`
         },
     })
     .then(response => {
@@ -201,11 +208,22 @@ document.addEventListener('DOMContentLoaded', () => {
             throw new Error('Error deleting item: ' + response.status);
         }
         alert('item succesfully deleted')
+        let ol = document.getElementById('showUL');
+        ol.remove();
         console.log('Item deleted successfully');
     })
     .catch(error => {
         alert('an error has occured: ' + error)
         console.error('Error deleting item:', error);
     });
+}
+function getToken() {
+    let token = localStorage.getItem("bearer");
+    return token;
+}
+function logout() {
+    localStorage.removeItem('bearer');
+    alert('you are logged out now');
+    window.location.href('login.html');
 }
 })
