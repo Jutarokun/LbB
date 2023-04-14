@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     let button = document.getElementById('loginButton');
     button.addEventListener('click', () => {
-    let email = document.getElementById('email');
+    let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
-    console.log('went here' + password);
-    if (password == 'm294') {
+    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    console.log('went here' + password && email.includes('@'));
+    if (password == 'm294' && emailRegex.test(email)) {
         let email = document.getElementById('email').value;
         let password = document.getElementById('password').value;
         if (email != '' && password != '') {
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     } else {
-        alert('please try the password m294 other passwords do not work');
+        alert('please try the password m294 other passwords do not work or change your email to a correct email');
     }
     })
 })
