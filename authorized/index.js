@@ -53,6 +53,7 @@ function showEverything() {
                   deleteing(item.id);
               }
               let newLi = document.createElement('li');
+              newLi.classList.add('box');
               newLi.textContent = "title: " + item.title + "\n" + "completed: " + item.completed + "\n";
               newLi.style.whiteSpace = "pre";
               newLi.style.marginBottom = "3%";
@@ -151,9 +152,11 @@ buttonPost.addEventListener('click', () => {
         // Creating the elements
         let label = document.createElement('label');
         let inputBox = document.createElement('input');
+        inputBox.classList.add('inputShow');
         let submit = document.createElement('button');
         let label2 = document.createElement('label');
         let completed = document.createElement('input');
+        completed.classList.add('boxLeft');
         let br1 = document.createElement('br');
         let br2 = document.createElement('br');
         let br3 = document.createElement('br');

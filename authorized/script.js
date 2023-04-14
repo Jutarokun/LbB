@@ -226,4 +226,9 @@ function logout() {
     alert('you are logged out now');
     window.location.href('login.html');
 }
+let bButton = document.getElementById('back');
+
+bButton.addEventListener('click', () => {
+    window.location.href = 'get.html';
+})
 })
